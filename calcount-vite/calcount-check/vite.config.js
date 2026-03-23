@@ -7,17 +7,18 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['icon-192.png', 'icon-512.png'],
       manifest: {
         name: 'CalCount',
         short_name: 'CalCount',
-        description: 'Scan any nutrition label with your camera. Claude AI reads it instantly. Track calories and macros all day.',
+        description: 'AI-powered calorie tracker',
         theme_color: '#080D18',
         background_color: '#080D18',
         display: 'standalone',
         orientation: 'portrait',
         icons: [
-          { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-          { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
         ],
       },
     }),
