@@ -1,41 +1,34 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { useToast } from '../components/Toast';
-
-const MACRO_FIELDS = [
-  { id: 'protein', label: 'Protein', color: 'var(--blue)' },
-  { id: 'carbs',   label: 'Carbs',   color: 'var(--amber)' },
-  { id: 'fat',     label: 'Fat',     color: 'var(--red)' },
-  { id: 'fiber',   label: 'Fiber',   color: 'var(--green)' },
-];
 
 export default function ManualScreen() {
-  const { dispatch, goTo } = useApp();
-  const toast = useToast();
-  const [form, setForm] = useState({ name: '', cal: '', protein: '', carbs: '', fat: '', fiber: '' });
+  const { updateEntries, goTo, toast } = useApp();
+  const [name, setName] = useState('');
+  const [cal, setCal] = useState('');
+  const [protein, setProtein] = useState('');
+  const [carbs, setCarbs] = useState('');
+  const [fat, setFat] = useState('');
+  const [fiber, setFiber] = useState('');
 
-  function set(key, val) {
-    setForm((f) => ({ ...f, [key]: val }));
-  }
+  const macroFields = [
+    { id: 'protein', label: 'Protein', color: 'var(--blue)', val: protein, set: setProtein },
+    { id: 'carbs', label: 'Carbs', color: 'var(--amber)', val: carbs, set: setCarbs },
+    { id: 'fat', label: 'Fat', color: 'var(--red)', val: fat, set: setFat },
+    { id: 'fiber', label: 'Fiber', color: 'var(--green)', val: fiber, set: setFiber },
+  ];
 
   function handleAdd() {
-    const name = form.name.trim();
-    const cal = parseInt(form.cal);
-    if (!name) { toast('Enter a food name', 'error'); return; }
-    if (!cal || cal <= 0) { toast('Enter calories', 'error'); return; }
-    dispatch({
-      type: 'ADD_ENTRY',
-      entry: {
-        id: Date.now(),
-        name,
-        cal,
-        protein: parseFloat(form.protein) || 0,
-        carbs:   parseFloat(form.carbs)   || 0,
-        fat:     parseFloat(form.fat)     || 0,
-        fiber:   parseFloat(form.fiber)   || 0,
-      },
-    });
-    toast(`Added ${name} — ${cal} kcal`);
+    if (!name.trim()) { toast('Enter a food name', 'error'); return; }
+    const calories = parseInt(cal);
+    if (!calories || calories <= 0) { toast('Enter calories', 'error'); return; }
+    updateEntries(prev => [...prev, {
+      id: Date.now(), name: name.trim(), cal: calories,
+      protein: parseFloat(protein) || 0,
+      carbs: parseFloat(carbs) || 0,
+      fat: parseFloat(fat) || 0,
+      fiber: parseFloat(fiber) || 0,
+    }]);
+    toast(`Added ${name} — ${calories} kcal`);
     goTo('home');
   }
 
@@ -45,40 +38,23 @@ export default function ManualScreen() {
         <div className="back-btn" onClick={() => goTo('home')}>←</div>
         <div>
           <div className="label">Add Entry</div>
-          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: '0.06em' }}>
-            Manual Entry
-          </div>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: '0.06em' }}>Manual Entry</div>
         </div>
       </div>
 
       <div className="form-field">
         <label>Food Name</label>
-        <input
-          className="input-field"
-          type="text"
-          placeholder="e.g. Chicken Breast"
-          value={form.name}
-          onChange={(e) => set('name', e.target.value)}
-          autoFocus
-        />
+        <input className="input-field" type="text" placeholder="e.g. Chicken Breast" value={name} onChange={e => setName(e.target.value)} />
       </div>
-
       <div className="form-field">
         <label>Calories (kcal)</label>
-        <input
-          className="input-field"
-          type="number"
-          placeholder="e.g. 165"
-          value={form.cal}
-          onChange={(e) => set('cal', e.target.value)}
-        />
+        <input className="input-field" type="number" placeholder="e.g. 165" value={cal} onChange={e => setCal(e.target.value)} />
       </div>
 
       <div className="label" style={{ marginBottom: 12, marginTop: 4 }}>Macros (optional)</div>
-
       <div className="macro-inputs" style={{ marginBottom: 20 }}>
-        {MACRO_FIELDS.map((f) => (
-          <div key={f.id} className="macro-input-wrap">
+        {macroFields.map(f => (
+          <div className="macro-input-wrap" key={f.id}>
             <label>
               <div className="macro-dot" style={{ background: f.color }} />
               {f.label} (g)
@@ -87,17 +63,15 @@ export default function ManualScreen() {
               className="input-field"
               type="number"
               placeholder="0"
-              value={form[f.id]}
-              onChange={(e) => set(f.id, e.target.value)}
-              style={{ borderColor: f.color + '28' }}
+              value={f.val}
+              onChange={e => f.set(e.target.value)}
+              style={{ borderColor: `${f.color}28` }}
             />
           </div>
         ))}
       </div>
 
-      <button className="btn btn-primary" onClick={handleAdd}>
-        Add to Log
-      </button>
+      <button className="btn btn-primary" onClick={handleAdd}>Add to Log</button>
       <div style={{ height: 20 }} />
     </div>
   );

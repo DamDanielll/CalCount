@@ -1,24 +1,25 @@
 import { useApp } from '../context/AppContext';
 
-const TABS = [
-  { id: 'home',    icon: '📊', label: 'Today' },
-  { id: 'scan',    icon: '📷', label: 'Scan' },
-  { id: 'history', icon: '📅', label: 'History' },
-  { id: 'settings',icon: '⚙️', label: 'Settings' },
-];
-
 export default function BottomNav({ active }) {
   const { goTo } = useApp();
+
+  const items = [
+    { key: 'home', icon: '📊', label: 'Today' },
+    { key: 'scan', icon: '📷', label: 'Scan' },
+    { key: 'history', icon: '📅', label: 'History' },
+    { key: 'settings', icon: '⚙️', label: 'Settings' },
+  ];
+
   return (
     <div className="bottom-nav">
-      {TABS.map((t) => (
+      {items.map(item => (
         <div
-          key={t.id}
-          className={`nav-item ${active === t.id ? 'active' : ''}`}
-          onClick={() => goTo(t.id)}
+          key={item.key}
+          className={`nav-item ${active === item.key ? 'active' : ''}`}
+          onClick={() => goTo(item.key)}
         >
-          <div className="nav-icon">{t.icon}</div>
-          <div className="nav-label">{t.label}</div>
+          <div className="nav-icon">{item.icon}</div>
+          <div className="nav-label">{item.label}</div>
         </div>
       ))}
     </div>

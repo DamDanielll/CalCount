@@ -1,56 +1,40 @@
 import { useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
-import { useToast } from '../components/Toast';
 import { scanLabel } from '../utils/api';
 
-// Camera stream is kept in a module-level ref so it can be reused across renders
-let _stream = null;
-
-export function stopCamera() {
-  if (_stream) {
-    _stream.getTracks().forEach((t) => t.stop());
-    _stream = null;
-  }
-}
-
 export default function ScanScreen() {
-  const { state, dispatch, goTo } = useApp();
-  const toast = useToast();
+  const {
+    goTo, toast, apiKey,
+    setScanned, setServings, setCapturedImg,
+    processing, setProcessing,
+    cameraStreamRef,
+  } = useApp();
+
   const videoRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
-    // Start camera on mount
-    if (!state.processing) startCamera();
-    // Stop camera when leaving scan screen
-    return () => {
-      // Only stop if we're navigating away (not just re-rendering)
-    };
+    startCamera();
+    return () => {};
   }, []);
 
-  // Attach stream to video element after render
-  useEffect(() => {
-    if (videoRef.current && _stream) {
-      videoRef.current.srcObject = _stream;
-      videoRef.current.play().catch(() => {});
-    }
-  });
-
   async function startCamera() {
-    if (_stream) {
+    if (cameraStreamRef.current) {
       if (videoRef.current && !videoRef.current.srcObject) {
-        videoRef.current.srcObject = _stream;
-        videoRef.current.play().catch(() => {});
+        videoRef.current.srcObject = cameraStreamRef.current;
+        videoRef.current.play();
       }
       return;
     }
     try {
-      _stream = await navigator.mediaDevices.getUserMedia({
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
         audio: false,
       });
+      cameraStreamRef.current = stream;
       if (videoRef.current) {
-        videoRef.current.srcObject = _stream;
-        videoRef.current.play().catch(() => {});
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
       }
     } catch {
       toast('Camera access denied. Use library instead.', 'error');
@@ -62,26 +46,30 @@ export default function ScanScreen() {
     if (!video || !video.videoWidth) return null;
     const canvas = document.createElement('canvas');
     const MAX = 1200;
-    let w = video.videoWidth;
-    let h = video.videoHeight;
-    if (w > MAX) { h = Math.round((h * MAX) / w); w = MAX; }
-    canvas.width = w;
-    canvas.height = h;
+    let w = video.videoWidth, h = video.videoHeight;
+    if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+    canvas.width = w; canvas.height = h;
     canvas.getContext('2d').drawImage(video, 0, 0, w, h);
     return canvas.toDataURL('image/jpeg', 0.82);
   }
 
   async function processImage(dataUrl) {
-    stopCamera();
-    dispatch({ type: 'SET_PROCESSING', value: true });
-    // Force re-render to show processing overlay
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach(t => t.stop());
+      cameraStreamRef.current = null;
+    }
+    setCapturedImg(dataUrl);
+    setProcessing(true);
     try {
-      const result = await scanLabel(dataUrl, state.apiKey);
-      dispatch({ type: 'SET_SCANNED', scanned: result, capturedImg: dataUrl });
+      const result = await scanLabel(dataUrl, apiKey);
+      setScanned(result);
+      setServings(1);
+      setProcessing(false);
+      goTo('review');
     } catch (err) {
-      dispatch({ type: 'SET_PROCESSING', value: false });
+      setProcessing(false);
       toast('Could not read label: ' + (err.message || 'unknown error'), 'error');
-      startCamera();
+      goTo('scan');
     }
   }
 
@@ -91,22 +79,13 @@ export default function ScanScreen() {
     processImage(img);
   }
 
-  function handleLibrary() {
-    document.getElementById('cc-file-input').click();
-  }
-
   function handleFileChange(e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => processImage(ev.target.result);
+    reader.onload = ev => processImage(ev.target.result);
     reader.readAsDataURL(file);
     e.target.value = '';
-  }
-
-  function handleCancel() {
-    stopCamera();
-    goTo('home');
   }
 
   return (
@@ -118,7 +97,7 @@ export default function ScanScreen() {
         <div className="scan-hint">Align nutrition label within the frame</div>
       </div>
 
-      {state.processing && (
+      {processing && (
         <div className="processing-overlay">
           <div className="spinner" />
           <div className="processing-text">Reading label…</div>
@@ -127,21 +106,12 @@ export default function ScanScreen() {
       )}
 
       <div className="scan-bar">
-        <div className="scan-back" onClick={handleCancel}>✕</div>
-        <div className="capture-btn" onClick={handleCapture}>
-          <div className="capture-inner" />
-        </div>
-        <div className="library-btn" onClick={handleLibrary}>🖼</div>
+        <div className="scan-back" onClick={() => goTo('home')}>✕</div>
+        <div className="capture-btn" onClick={handleCapture}><div className="capture-inner" /></div>
+        <div className="library-btn" onClick={() => fileInputRef.current?.click()}>🖼</div>
       </div>
 
-      <input
-        id="cc-file-input"
-        type="file"
-        accept="image/*"
-        capture="environment"
-        style={{ display: 'none' }}
-        onChange={handleFileChange}
-      />
+      <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
     </div>
   );
 }

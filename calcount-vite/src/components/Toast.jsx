@@ -1,29 +1,23 @@
-import { useEffect, useRef } from 'react';
+import { useImperativeHandle, forwardRef, useState, useRef } from 'react';
 
-let _show = null;
+const Toast = forwardRef((_, ref) => {
+  const [state, setState] = useState({ msg: '', type: 'success', visible: false });
+  const timerRef = useRef(null);
 
-export function useToast() {
-  return (msg, type = 'success') => {
-    if (_show) _show(msg, type);
-  };
-}
+  useImperativeHandle(ref, () => ({
+    show(msg, type = 'success') {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      setState({ msg, type, visible: true });
+      timerRef.current = setTimeout(() => setState(s => ({ ...s, visible: false })), 2800);
+    },
+  }));
 
-export function Toast() {
-  const elRef = useRef(null);
+  return (
+    <div className={`toast ${state.type} ${state.visible ? 'show' : ''}`}>
+      {state.msg}
+    </div>
+  );
+});
 
-  useEffect(() => {
-    _show = (msg, type = 'success') => {
-      const el = elRef.current;
-      if (!el) return;
-      el.textContent = msg;
-      el.className = `toast ${type} show`;
-      clearTimeout(el._t);
-      el._t = setTimeout(() => {
-        el.className = 'toast';
-      }, 2800);
-    };
-    return () => { _show = null; };
-  }, []);
-
-  return <div ref={elRef} className="toast" />;
-}
+Toast.displayName = 'Toast';
+export default Toast;

@@ -11,17 +11,13 @@ export async function scanLabel(dataUrl, apiKey) {
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 600,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: { type: 'base64', media_type: 'image/jpeg', data: base64 },
-            },
-            {
-              type: 'text',
-              text: `This is a nutrition label photo. Extract nutrition facts and return ONLY a valid JSON object with exactly these fields (numbers only, no units in values):
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
+          {
+            type: 'text',
+            text: `This is a nutrition label photo. Extract nutrition facts and return ONLY a valid JSON object with exactly these fields (numbers only, no units in values):
 {
   "name": "product name if visible on label, else 'Scanned Item'",
   "calories": <number per serving>,
@@ -40,10 +36,9 @@ export async function scanLabel(dataUrl, apiKey) {
   }
 }
 Use 0 for any macro field not found. Return ONLY the JSON, no markdown, no backticks, no explanation.`,
-            },
-          ],
-        },
-      ],
+          },
+        ],
+      }],
     }),
   });
 
@@ -53,7 +48,7 @@ Use 0 for any macro field not found. Return ONLY the JSON, no markdown, no backt
   }
 
   const data = await res.json();
-  const text = data.content.map((b) => b.text || '').join('').trim();
+  const text = data.content.map(b => b.text || '').join('').trim();
   const clean = text.replace(/```json|```/g, '').trim();
   return JSON.parse(clean);
 }
@@ -70,10 +65,9 @@ export async function estimateNutrition(description, apiKey) {
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 500,
-      messages: [
-        {
-          role: 'user',
-          content: `You are a nutrition expert. Estimate the nutritional content for the following food description. Use your knowledge of standard nutrition databases (USDA, etc) to give the best possible estimate.
+      messages: [{
+        role: 'user',
+        content: `You are a nutrition expert. Estimate the nutritional content for the following food description. Use your knowledge of standard nutrition databases (USDA, etc) to give the best possible estimate.
 
 Food description: "${description}"
 
@@ -88,8 +82,7 @@ Return ONLY a valid JSON object with no markdown, no backticks, no explanation:
   "confidence": "<high|medium|low>",
   "note": "<one short sentence explaining your estimate or any assumptions, max 12 words>"
 }`,
-        },
-      ],
+      }],
     }),
   });
 
@@ -99,7 +92,7 @@ Return ONLY a valid JSON object with no markdown, no backticks, no explanation:
   }
 
   const data = await res.json();
-  const text = data.content.map((b) => b.text || '').join('').trim();
+  const text = data.content.map(b => b.text || '').join('').trim();
   const clean = text.replace(/```json|```/g, '').trim();
   return JSON.parse(clean);
 }

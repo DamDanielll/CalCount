@@ -1,35 +1,26 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { useToast } from '../components/Toast';
 
 export default function SetupScreen() {
-  const { state, dispatch } = useApp();
-  const toast = useToast();
-  const [key, setKey] = useState(state.apiKey);
-  const [goal, setGoal] = useState(state.goal || '');
+  const { apiKey, setApiKey, goal, setGoal, goTo, toast } = useApp();
+  const [keyVal, setKeyVal] = useState(apiKey);
+  const [goalVal, setGoalVal] = useState(goal || '');
 
   function handleSave() {
-    const k = key.trim();
-    const g = parseInt(goal);
-    if (!k.startsWith('sk-ant-')) {
-      toast('Enter a valid API key (starts with sk-ant-)', 'error');
-      return;
-    }
-    if (!g || g < 100) {
-      toast('Enter a calorie goal (e.g. 2000)', 'error');
-      return;
-    }
-    dispatch({ type: 'SETUP_SAVE', apiKey: k, goal: g });
+    const key = keyVal.trim();
+    const g = parseInt(goalVal);
+    if (!key.startsWith('sk-ant-')) { toast('Enter a valid API key (starts with sk-ant-)', 'error'); return; }
+    if (!g || g < 100) { toast('Enter a calorie goal (e.g. 2000)', 'error'); return; }
+    setApiKey(key);
+    setGoal(g);
+    goTo('home');
   }
 
   return (
     <div className="setup-wrap">
       <div className="setup-logo">🔢</div>
       <div className="setup-title">CalCount</div>
-      <p className="setup-sub">
-        Scan any nutrition label with your camera — AI reads it instantly. Track calories and
-        macros all day.
-      </p>
+      <p className="setup-sub">Scan any nutrition label with your camera — AI reads it instantly. Track calories and macros all day.</p>
 
       <div className="setup-field">
         <label>Anthropic API Key</label>
@@ -37,17 +28,15 @@ export default function SetupScreen() {
           className="input-field"
           type="password"
           placeholder="sk-ant-..."
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
+          value={keyVal}
+          onChange={e => setKeyVal(e.target.value)}
           autoComplete="off"
           spellCheck={false}
         />
         <p className="api-note">
           Get a free key at{' '}
-          <a href="https://console.anthropic.com" target="_blank" rel="noreferrer">
-            console.anthropic.com
-          </a>{' '}
-          — stored only on your device, never shared.
+          <a href="https://console.anthropic.com" target="_blank" rel="noreferrer">console.anthropic.com</a>
+          {' '}— stored only on your device, never shared.
         </p>
       </div>
 
@@ -57,8 +46,8 @@ export default function SetupScreen() {
           className="input-field"
           type="number"
           placeholder="2000"
-          value={goal}
-          onChange={(e) => setGoal(e.target.value)}
+          value={goalVal}
+          onChange={e => setGoalVal(e.target.value)}
         />
       </div>
 
