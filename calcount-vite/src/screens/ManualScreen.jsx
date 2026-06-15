@@ -1,14 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
 
 export default function ManualScreen() {
-  const { updateEntries, goTo, toast } = useApp();
+  const { updateEntries, goTo, toast, barcodeData, setBarcodeData } = useApp();
   const [name, setName] = useState('');
   const [cal, setCal] = useState('');
   const [protein, setProtein] = useState('');
   const [carbs, setCarbs] = useState('');
   const [fat, setFat] = useState('');
   const [fiber, setFiber] = useState('');
+  const [fromBarcode, setFromBarcode] = useState(false);
+
+  useEffect(() => {
+    if (barcodeData) {
+      setName(barcodeData.name || '');
+      setCal(barcodeData.calories ? String(barcodeData.calories) : '');
+      setProtein(barcodeData.protein ? String(barcodeData.protein) : '');
+      setCarbs(barcodeData.carbs ? String(barcodeData.carbs) : '');
+      setFat(barcodeData.fat ? String(barcodeData.fat) : '');
+      setFiber(barcodeData.fiber ? String(barcodeData.fiber) : '');
+      setFromBarcode(true);
+      setBarcodeData(null);
+    }
+  }, []);
 
   const macroFields = [
     { id: 'protein', label: 'Protein', color: 'var(--blue)', val: protein, set: setProtein },
@@ -38,7 +52,12 @@ export default function ManualScreen() {
         <div className="back-btn" onClick={() => goTo('home')}>←</div>
         <div>
           <div className="label">Add Entry</div>
-          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: '0.06em' }}>Manual Entry</div>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: '0.06em' }}>
+            {fromBarcode ? 'Barcode Lookup' : 'Manual Entry'}
+          </div>
+          {fromBarcode && (
+            <div style={{ fontSize: 11, color: 'var(--green)', marginTop: 2 }}>Auto-filled from barcode scan — edit if needed</div>
+          )}
         </div>
       </div>
 

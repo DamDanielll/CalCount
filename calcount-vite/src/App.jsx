@@ -10,6 +10,7 @@ import DescribeScreen from './screens/DescribeScreen';
 import HistoryScreen from './screens/HistoryScreen';
 import MealsScreen from './screens/MealsScreen';
 import SettingsScreen from './screens/SettingsScreen';
+import BarcodeScreen from './screens/BarcodeScreen';
 
 function AppInner() {
   const { screen, toastRef } = useApp();
@@ -25,6 +26,7 @@ function AppInner() {
       {screen === 'history' && <HistoryScreen />}
       {screen === 'meals' && <MealsScreen />}
       {screen === 'settings' && <SettingsScreen />}
+      {screen === 'barcode' && <BarcodeScreen />}
       <Toast ref={toastRef} />
     </>
   );

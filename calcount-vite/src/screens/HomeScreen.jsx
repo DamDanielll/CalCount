@@ -140,6 +140,14 @@ export default function HomeScreen() {
             </div>
           </div>
 
+          <div className="scan-cta barcode-cta" onClick={() => goTo('barcode')}>
+            <div className="scan-icon-wrap" style={{ background: 'rgba(0,0,0,0.2)' }}>🔍</div>
+            <div className="scan-cta-text">
+              <h3>Scan Product Barcode</h3>
+              <p>Instant nutrition lookup via Open Food Facts</p>
+            </div>
+          </div>
+
           <button className="btn btn-secondary" style={{ marginBottom: 10 }} onClick={() => goTo('manual')}>
             ✏️ &nbsp;Add Manually
           </button>

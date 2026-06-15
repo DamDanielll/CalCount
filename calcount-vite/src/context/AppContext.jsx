@@ -25,6 +25,7 @@ export function AppProvider({ children }) {
   const [describeLoading, setDescribeLoading] = useState(false);
   const [capturedImg, setCapturedImg] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [barcodeData, setBarcodeData] = useState(null);
   const cameraStreamRef = useRef(null);
 
   const toastRef = useRef(null);
@@ -104,6 +105,7 @@ export function AppProvider({ children }) {
       describeLoading, setDescribeLoading,
       capturedImg, setCapturedImg,
       processing, setProcessing,
+      barcodeData, setBarcodeData,
       cameraStreamRef,
       stopCamera,
       toast, toastRef,
