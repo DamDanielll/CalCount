@@ -26,6 +26,11 @@ export async function lookupBarcode(barcode) {
   // energy-kcal is preferred; fall back to kJ → kcal conversion
   const kcal = get('energy-kcal') || Math.round(get('energy') / 4.184);
 
+  const raw100g = (key) => {
+    const v = n[`${key}_100g`];
+    return v != null && !isNaN(v) ? parseFloat(v) : null;
+  };
+
   return {
     name: (p.product_name || 'Scanned Product').trim(),
     calories: Math.round(kcal) || 0,
@@ -34,6 +39,14 @@ export async function lookupBarcode(barcode) {
     fat: get('fat'),
     fiber: get('fiber'),
     servingSize: p.serving_size || null,
+    servingGrams: p.serving_quantity ? parseFloat(p.serving_quantity) : null,
+    per100g: {
+      calories: raw100g('energy-kcal'),
+      protein: raw100g('proteins'),
+      carbs: raw100g('carbohydrates'),
+      fat: raw100g('fat'),
+      fiber: raw100g('fiber'),
+    },
     barcode,
   };
 }

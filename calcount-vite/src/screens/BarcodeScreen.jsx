@@ -49,7 +49,7 @@ export default function BarcodeScreen() {
       const product = await lookupBarcode(code);
       setBarcodeData(product);
       toast(`Found: ${product.name}`);
-      goTo('manual');
+      goTo('barcode-review');
     } catch (err) {
       setLoading(false);
       if (err.notFound) {

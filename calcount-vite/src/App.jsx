@@ -11,6 +11,7 @@ import HistoryScreen from './screens/HistoryScreen';
 import MealsScreen from './screens/MealsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 const BarcodeScreen = lazy(() => import('./screens/BarcodeScreen'));
+const BarcodeReviewScreen = lazy(() => import('./screens/BarcodeReviewScreen'));
 
 function AppInner() {
   const { screen, toastRef } = useApp();
@@ -27,6 +28,7 @@ function AppInner() {
       {screen === 'meals' && <MealsScreen />}
       {screen === 'settings' && <SettingsScreen />}
       {screen === 'barcode' && <Suspense fallback={null}><BarcodeScreen /></Suspense>}
+      {screen === 'barcode-review' && <Suspense fallback={null}><BarcodeReviewScreen /></Suspense>}
       <Toast ref={toastRef} />
     </>
   );
