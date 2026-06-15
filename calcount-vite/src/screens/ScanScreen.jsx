@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { X, Image } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { scanLabel } from '../utils/api';
 
-const STABILITY_THRESHOLD = 8;   // avg pixel diff per channel to consider "still"
-const STABILITY_FRAMES = 18;      // consecutive stable frames before auto-capture (~0.6s at 30fps)
-const SAMPLE_SIZE = 80;           // downscale canvas for diff comparison
+const STABILITY_THRESHOLD = 8;
+const STABILITY_FRAMES = 18;
+const SAMPLE_SIZE = 80;
 
 export default function ScanScreen() {
   const {
@@ -20,7 +21,7 @@ export default function ScanScreen() {
   const prevDataRef = useRef(null);
   const rafRef = useRef(null);
   const capturedRef = useRef(false);
-  const [stability, setStability] = useState(0); // 0–100 for the indicator
+  const [stability, setStability] = useState(0);
 
   useEffect(() => {
     startCamera();
@@ -186,9 +187,9 @@ export default function ScanScreen() {
       )}
 
       <div className="scan-bar">
-        <div className="scan-back" onClick={() => goTo('home')}>✕</div>
+        <div className="scan-back" onClick={() => goTo('home')}><X size={20} /></div>
         <div className="capture-btn" onClick={handleCapture}><div className="capture-inner" /></div>
-        <div className="library-btn" onClick={() => fileInputRef.current?.click()}>🖼</div>
+        <div className="library-btn" onClick={() => fileInputRef.current?.click()}><Image size={20} /></div>
       </div>
 
       <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />

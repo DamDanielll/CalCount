@@ -1,13 +1,14 @@
+import { BarChart2, Camera, Calendar, Settings } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function BottomNav({ active }) {
   const { goTo } = useApp();
 
   const items = [
-    { key: 'home', icon: '📊', label: 'Today' },
-    { key: 'scan', icon: '📷', label: 'Scan' },
-    { key: 'history', icon: '📅', label: 'History' },
-    { key: 'settings', icon: '⚙️', label: 'Settings' },
+    { key: 'home', icon: <BarChart2 size={22} />, label: 'Today' },
+    { key: 'scan', icon: <Camera size={22} />, label: 'Scan' },
+    { key: 'history', icon: <Calendar size={22} />, label: 'History' },
+    { key: 'settings', icon: <Settings size={22} />, label: 'Settings' },
   ];
 
   return (

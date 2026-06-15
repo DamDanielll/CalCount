@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { Settings, Camera, ScanBarcode, Pencil, Brain, UtensilsCrossed, Check, Copy, X } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import BottomNav from '../components/BottomNav';
-import { totals, pct, progressColor, macroColor, foodEmoji, fmt } from '../utils/helpers';
+import FoodIcon from '../components/FoodIcon';
+import { totals, pct, progressColor, macroColor, fmt } from '../utils/helpers';
 
 export default function HomeScreen() {
   const {
@@ -14,7 +16,7 @@ export default function HomeScreen() {
   const p = pct(t.cal, goal);
   const col = progressColor(p);
   const remaining = goal - t.cal;
-  const statusText = p >= 100 ? '🔴 Over limit' : p >= 80 ? '🟡 Almost full' : '🟢 On track';
+  const statusText = p >= 100 ? 'Over limit' : p >= 80 ? 'Almost full' : 'On track';
   const statusBg = p >= 100 ? 'rgba(255,107,107,0.12)' : p >= 80 ? 'rgba(249,199,64,0.12)' : 'rgba(46,229,160,0.12)';
 
   const macros = [
@@ -80,7 +82,7 @@ export default function HomeScreen() {
     updateMeals(prev => [...prev, { id: Date.now(), name: mealName.trim(), items }]);
     setSelectMode(false);
     setSelectedIdxs(new Set());
-    toast(`Saved "${mealName}" as a meal 🍱`);
+    toast(`Saved "${mealName}" as a meal`);
   }
 
   return (
@@ -94,7 +96,7 @@ export default function HomeScreen() {
               </div>
               <h1 className="brand">CalCount</h1>
             </div>
-            <div className="settings-btn" onClick={() => goTo('settings')}>⚙️</div>
+            <div className="settings-btn" onClick={() => goTo('settings')}><Settings size={16} /></div>
           </div>
 
           <div className="card cal-card">
@@ -134,19 +136,19 @@ export default function HomeScreen() {
 
           <div className="scan-btn-row">
             <div className="scan-split-btn scan-split-label" onClick={() => goTo('scan')}>
-              <span className="scan-split-icon">📷</span>
+              <span className="scan-split-icon"><Camera size={28} /></span>
               <span className="scan-split-title">Nutrition Label</span>
               <span className="scan-split-sub">AI scan</span>
             </div>
             <div className="scan-split-btn scan-split-barcode" onClick={() => goTo('barcode')}>
-              <span className="scan-split-icon">🔍</span>
+              <span className="scan-split-icon"><ScanBarcode size={28} /></span>
               <span className="scan-split-title">Barcode</span>
               <span className="scan-split-sub">Product lookup</span>
             </div>
           </div>
 
           <button className="btn btn-secondary" style={{ marginBottom: 10 }} onClick={() => goTo('manual')}>
-            ✏️ &nbsp;Add Manually
+            <Pencil size={15} /> Add Manually
           </button>
 
           <button
@@ -154,7 +156,7 @@ export default function HomeScreen() {
             style={{ marginBottom: 20, borderColor: 'rgba(167,139,250,0.3)', color: 'var(--purple)' }}
             onClick={() => goTo('describe')}
           >
-            🧠 &nbsp;Describe a Food — AI Estimates
+            <Brain size={15} /> Describe a Food — AI Estimates
           </button>
 
           <div className="card" style={{ padding: '14px 18px' }}>
@@ -199,11 +201,13 @@ export default function HomeScreen() {
                         className={`entry-checkbox ${isChecked ? 'checked' : ''}`}
                         onClick={e2 => { e2.stopPropagation(); toggleSelect(i); }}
                       >
-                        {isChecked ? '✓' : ''}
+                        {isChecked ? <Check size={13} /> : null}
                       </div>
                     )}
                     <div className="entry-left">
-                      <div className="entry-avatar" style={{ background: 'var(--bg3)' }}>{foodEmoji(e.name)}</div>
+                      <div className="entry-avatar" style={{ background: 'var(--bg3)' }}>
+                        <FoodIcon name={e.name} size={18} />
+                      </div>
                       <div style={{ minWidth: 0 }}>
                         <div className="entry-name">{e.name}</div>
                         <div className="entry-macros">
@@ -219,7 +223,9 @@ export default function HomeScreen() {
                     {!selectMode ? (
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div className="entry-cal" style={{ color: col }}>{e.cal}</div>
-                        <div className="entry-edit" title="Edit" onClick={ev => { ev.stopPropagation(); openEdit(i); }}>✏️</div>
+                        <div className="entry-edit" title="Edit" onClick={ev => { ev.stopPropagation(); openEdit(i); }}>
+                          <Pencil size={14} />
+                        </div>
                         <div
                           className="entry-edit"
                           title="Duplicate"
@@ -233,8 +239,12 @@ export default function HomeScreen() {
                             });
                             toast(`Duplicated ${e.name}`);
                           }}
-                        >📋</div>
-                        <div className="entry-del" onClick={ev => { ev.stopPropagation(); updateEntries(prev => prev.filter((_, idx) => idx !== i)); }}>✕</div>
+                        >
+                          <Copy size={14} />
+                        </div>
+                        <div className="entry-del" onClick={ev => { ev.stopPropagation(); updateEntries(prev => prev.filter((_, idx) => idx !== i)); }}>
+                          <X size={13} />
+                        </div>
                       </div>
                     ) : (
                       <div className="entry-cal" style={{ color: col }}>{e.cal}</div>
@@ -246,7 +256,7 @@ export default function HomeScreen() {
           </div>
 
           <button className="btn btn-secondary" style={{ marginTop: 4 }} onClick={() => goTo('meals')}>
-            🍱 &nbsp;Saved Meals
+            <UtensilsCrossed size={15} /> Saved Meals
           </button>
         </div>
       </div>

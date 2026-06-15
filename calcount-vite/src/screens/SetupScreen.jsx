@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Hash, ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function SetupScreen() {
@@ -18,7 +19,7 @@ export default function SetupScreen() {
 
   return (
     <div className="setup-wrap">
-      <div className="setup-logo">🔢</div>
+      <div className="setup-logo"><Hash size={30} /></div>
       <div className="setup-title">CalCount</div>
       <p className="setup-sub">Scan any nutrition label with your camera — AI reads it instantly. Track calories and macros all day.</p>
 
@@ -52,7 +53,7 @@ export default function SetupScreen() {
       </div>
 
       <button className="btn btn-primary" style={{ marginTop: 8 }} onClick={handleSave}>
-        Get Started →
+        Get Started <ArrowRight size={16} />
       </button>
     </div>
   );

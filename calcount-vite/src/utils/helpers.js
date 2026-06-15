@@ -12,26 +12,6 @@ export function macroColor(key) {
   return { protein: 'var(--blue)', carbs: 'var(--amber)', fat: 'var(--red)', fiber: 'var(--green)' }[key];
 }
 
-export function foodEmoji(name) {
-  const n = name.toLowerCase();
-  if (n.match(/coffee|espresso|latte/)) return '☕';
-  if (n.match(/egg/)) return '🥚';
-  if (n.match(/chicken|turkey/)) return '🍗';
-  if (n.match(/beef|steak|burger/)) return '🥩';
-  if (n.match(/fish|salmon|tuna/)) return '🐟';
-  if (n.match(/salad|veggie|vegetable|broccoli|spinach/)) return '🥗';
-  if (n.match(/pizza/)) return '🍕';
-  if (n.match(/bread|toast|sandwich/)) return '🍞';
-  if (n.match(/rice/)) return '🍚';
-  if (n.match(/pasta|noodle/)) return '🍝';
-  if (n.match(/banana/)) return '🍌';
-  if (n.match(/apple/)) return '🍎';
-  if (n.match(/milk|yogurt|cheese|dairy/)) return '🥛';
-  if (n.match(/protein|shake|bar/)) return '💪';
-  if (n.match(/cereal|oat|granola/)) return '🥣';
-  if (n.match(/juice|smoothie/)) return '🥤';
-  return '🍽️';
-}
 
 export function totals(entries) {
   return entries.reduce((a, e) => ({

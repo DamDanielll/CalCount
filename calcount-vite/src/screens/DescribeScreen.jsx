@@ -1,3 +1,4 @@
+import { Brain, Flame, Check, MessageSquare, ArrowLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { estimateNutrition } from '../utils/api';
 
@@ -36,8 +37,10 @@ export default function DescribeScreen() {
     ? (r.confidence === 'high' ? 'rgba(46,229,160,0.1)' : r.confidence === 'medium' ? 'rgba(249,199,64,0.1)' : 'rgba(255,107,107,0.1)')
     : '';
   const confidenceLabel = r
-    ? (r.confidence === 'high' ? '✓ High confidence' : r.confidence === 'medium' ? '~ Medium confidence' : '? Low confidence — consider editing')
-    : '';
+    ? (r.confidence === 'high'
+        ? <><Check size={12} style={{ display: 'inline', verticalAlign: 'middle' }} /> High confidence</>
+        : r.confidence === 'medium' ? '~ Medium confidence' : '? Low confidence — consider editing')
+    : null;
 
   async function handleEstimate() {
     const text = describeText.trim();
@@ -77,7 +80,7 @@ export default function DescribeScreen() {
   return (
     <div className="review-screen">
       <div className="review-header" style={{ marginBottom: 20 }}>
-        <div className="back-btn" onClick={() => goTo('home')}>←</div>
+        <div className="back-btn" onClick={() => goTo('home')}><ArrowLeft size={18} /></div>
         <div>
           <div className="label">AI Nutrition Estimate</div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: '0.06em' }}>Describe a Food</div>
@@ -121,7 +124,7 @@ export default function DescribeScreen() {
       >
         {loading
           ? <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><div className="spinner" style={{ width: 18, height: 18, borderWidth: 2 }} /> Estimating…</span>
-          : '🧠 \u00a0Estimate with AI'}
+          : <><Brain size={15} /> Estimate with AI</>}
       </button>
 
       {r && (
@@ -131,8 +134,8 @@ export default function DescribeScreen() {
           </div>
 
           {r.note && (
-            <div style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 12, lineHeight: 1.5, padding: '10px 14px', background: 'var(--bg3)', borderRadius: 10 }}>
-              💬 {r.note}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12, color: 'var(--text2)', marginBottom: 12, lineHeight: 1.5, padding: '10px 14px', background: 'var(--bg3)', borderRadius: 10 }}>
+              <MessageSquare size={14} style={{ flexShrink: 0, marginTop: 1 }} /> {r.note}
             </div>
           )}
 
@@ -140,7 +143,9 @@ export default function DescribeScreen() {
             <div className="label" style={{ marginBottom: 10 }}>Estimated values — tap to edit</div>
             <div className="estimate-result">
               <div className="estimate-row">
-                <div className="estimate-label">🔥 Calories</div>
+                <div className="estimate-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Flame size={16} color="var(--red)" /> Calories
+                </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <input className="estimate-input" id="est-cal" type="number" defaultValue={r.calories} />
                   <span className="estimate-unit">kcal</span>

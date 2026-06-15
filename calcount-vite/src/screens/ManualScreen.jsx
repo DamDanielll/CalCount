@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function ManualScreen() {
@@ -49,7 +50,7 @@ export default function ManualScreen() {
   return (
     <div className="review-screen">
       <div className="review-header" style={{ marginBottom: 20 }}>
-        <div className="back-btn" onClick={() => goTo('home')}>←</div>
+        <div className="back-btn" onClick={() => goTo('home')}><ArrowLeft size={18} /></div>
         <div>
           <div className="label">Add Entry</div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: '0.06em' }}>

@@ -1,6 +1,13 @@
 import { useState } from 'react';
+import { ArrowLeft, Smartphone, Save, DollarSign } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import BottomNav from '../components/BottomNav';
+
+const InfoIcon = ({ icon: Icon }) => (
+  <span style={{ display: 'inline-flex', verticalAlign: 'middle', marginRight: 4 }}>
+    <Icon size={13} />
+  </span>
+);
 
 export default function SettingsScreen() {
   const { goal, setGoal, apiKey, setApiKey, updateEntries, goTo, toast } = useApp();
@@ -37,7 +44,7 @@ export default function SettingsScreen() {
       <div className="screen">
         <div className="screen-inner">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28, paddingTop: 8 }}>
-            <div className="back-btn" onClick={() => goTo('home')}>←</div>
+            <div className="back-btn" onClick={() => goTo('home')}><ArrowLeft size={18} /></div>
             <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: '0.06em' }}>Settings</div>
           </div>
 
@@ -82,12 +89,12 @@ export default function SettingsScreen() {
           )}
 
           <div className="card" style={{ marginTop: 0 }}>
-            <div style={{ fontSize: 12, color: 'var(--text3)', lineHeight: 1.6 }}>
-              📱 <strong style={{ color: 'var(--text2)' }}>Add to Home Screen</strong><br />
+            <div style={{ fontSize: 12, color: 'var(--text3)', lineHeight: 1.8 }}>
+              <InfoIcon icon={Smartphone} /><strong style={{ color: 'var(--text2)' }}>Add to Home Screen</strong><br />
               In Safari: tap Share → "Add to Home Screen" to install as an app.<br /><br />
-              💾 <strong style={{ color: 'var(--text2)' }}>Data Storage</strong><br />
+              <InfoIcon icon={Save} /><strong style={{ color: 'var(--text2)' }}>Data Storage</strong><br />
               All data is saved locally on your device. Logs reset each day automatically.<br /><br />
-              💰 <strong style={{ color: 'var(--text2)' }}>API Cost</strong><br />
+              <InfoIcon icon={DollarSign} /><strong style={{ color: 'var(--text2)' }}>API Cost</strong><br />
               Each label scan costs ~$0.001. Your $5 free credit lasts years at typical usage.
             </div>
           </div>

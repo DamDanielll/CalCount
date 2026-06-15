@@ -973,8 +973,11 @@ h1.brand {
 }
 
 .scan-split-icon {
-  font-size: 28px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
 }
 
 .scan-split-title {

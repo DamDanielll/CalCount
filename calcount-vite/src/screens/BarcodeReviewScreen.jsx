@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ArrowLeft, Flame, AlertTriangle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { fmt } from '../utils/helpers';
 
@@ -76,7 +77,7 @@ export default function BarcodeReviewScreen() {
   return (
     <div className="review-screen">
       <div className="review-header">
-        <div className="back-btn" onClick={() => goTo('home')}>←</div>
+        <div className="back-btn" onClick={() => goTo('home')}><ArrowLeft size={18} /></div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div className="label">Barcode Scan</div>
           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: '0.06em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -85,7 +86,6 @@ export default function BarcodeReviewScreen() {
         </div>
       </div>
 
-      {/* Amount step */}
       <div className="prompt-step">
         <div className="prompt-step-num">?</div>
         <div className="prompt-step-body">
@@ -126,23 +126,28 @@ export default function BarcodeReviewScreen() {
               <div className="serv-btn" onClick={() => setServings(Math.round((servings + 0.5) * 10) / 10)}>+</div>
             </div>
           ) : (
-            <div style={{ position: 'relative' }}>
-              <input
-                type="number"
-                placeholder="e.g. 150"
-                value={grams}
-                onChange={e => setGrams(e.target.value)}
-                className="input-field"
-                style={{ fontSize: 28, fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.06em', paddingRight: 60, textAlign: 'center' }}
-              />
-              <div style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: 'var(--text3)', fontWeight: 600 }}>g</div>
-              {!hasGramData && <div style={{ fontSize: 11, color: 'var(--amber)', marginTop: 8, textAlign: 'center' }}>⚠️ No per-100g data available — estimate based on serving size</div>}
-            </div>
+            <>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type="number"
+                  placeholder="e.g. 150"
+                  value={grams}
+                  onChange={e => setGrams(e.target.value)}
+                  className="input-field"
+                  style={{ fontSize: 28, fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.06em', paddingRight: 60, textAlign: 'center' }}
+                />
+                <div style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: 'var(--text3)', fontWeight: 600 }}>g</div>
+              </div>
+              {!hasGramData && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--amber)', marginTop: 8 }}>
+                  <AlertTriangle size={12} /> No per-100g data available — estimate based on serving size
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
 
-      {/* Live total */}
       <div className="total-card" style={{ marginBottom: 14 }}>
         <div className="label" style={{ marginBottom: 6 }}>Total to Log</div>
         <div className="total-cal">
@@ -161,7 +166,6 @@ export default function BarcodeReviewScreen() {
         Add to Log
       </button>
 
-      {/* Collapsible nutrition breakdown */}
       <div
         style={{ textAlign: 'center', fontSize: 13, color: 'var(--text2)', cursor: 'pointer', marginBottom: 12, padding: '8px 0' }}
         onClick={() => setShowBreakdown(v => !v)}
@@ -174,7 +178,9 @@ export default function BarcodeReviewScreen() {
           <div className="label" style={{ marginBottom: 12 }}>Per Serving · {data.servingSize || '1 serving'}</div>
           <div className="nutrition-table">
             <div className="nut-row">
-              <div className="nut-name">🔥 Calories</div>
+              <div className="nut-name" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Flame size={16} color="var(--red)" /> Calories
+              </div>
               <div className="nut-val">{data.calories} kcal</div>
             </div>
             {MACROS.map(m => (

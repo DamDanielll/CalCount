@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
+import { X } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { lookupBarcode } from '../utils/barcode';
 
@@ -101,7 +102,7 @@ export default function BarcodeScreen() {
       </div>
 
       <div className="scan-bar">
-        <div className="scan-back" onClick={() => { stopScanning(); goTo('home'); }}>✕</div>
+        <div className="scan-back" onClick={() => { stopScanning(); goTo('home'); }}><X size={20} /></div>
         <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 13, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
           Barcode Lookup
         </div>

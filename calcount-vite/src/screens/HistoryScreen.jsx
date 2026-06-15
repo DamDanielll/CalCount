@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Copy } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import BottomNav from '../components/BottomNav';
 import { getPastDays } from '../utils/storage';
@@ -79,12 +80,22 @@ export default function HistoryScreen() {
                           </div>
                           <div className="hist-entry-right">
                             <div className="hist-entry-cal">{e.cal}</div>
-                            <button className="readd-btn" onClick={() => readdEntry(day.date, i)}>📋 Copy</button>
+                            <button
+                              className="readd-btn"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                              onClick={() => readdEntry(day.date, i)}
+                            >
+                              <Copy size={12} /> Copy
+                            </button>
                           </div>
                         </div>
                       ))}
-                      <button className="readd-all-btn" onClick={() => readdAll(day.date)}>
-                        📋 Copy All to Today
+                      <button
+                        className="readd-all-btn"
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                        onClick={() => readdAll(day.date)}
+                      >
+                        <Copy size={13} /> Copy All to Today
                       </button>
                     </div>
                   )}
