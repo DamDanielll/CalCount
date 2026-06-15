@@ -132,19 +132,16 @@ export default function HomeScreen() {
             ))}
           </div>
 
-          <div className="scan-cta" onClick={() => goTo('scan')}>
-            <div className="scan-icon-wrap">📷</div>
-            <div className="scan-cta-text">
-              <h3>Scan Nutrition Label</h3>
-              <p>Point camera at any label — CalCount does the rest</p>
+          <div className="scan-btn-row">
+            <div className="scan-split-btn scan-split-label" onClick={() => goTo('scan')}>
+              <span className="scan-split-icon">📷</span>
+              <span className="scan-split-title">Nutrition Label</span>
+              <span className="scan-split-sub">AI scan</span>
             </div>
-          </div>
-
-          <div className="scan-cta barcode-cta" onClick={() => goTo('barcode')}>
-            <div className="scan-icon-wrap" style={{ background: 'rgba(0,0,0,0.2)' }}>🔍</div>
-            <div className="scan-cta-text">
-              <h3>Scan Product Barcode</h3>
-              <p>Instant nutrition lookup via Open Food Facts</p>
+            <div className="scan-split-btn scan-split-barcode" onClick={() => goTo('barcode')}>
+              <span className="scan-split-icon">🔍</span>
+              <span className="scan-split-title">Barcode</span>
+              <span className="scan-split-sub">Product lookup</span>
             </div>
           </div>
 

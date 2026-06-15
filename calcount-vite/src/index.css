@@ -868,6 +868,65 @@ h1.brand {
   font-weight: 600;
 }
 
+/* SCAN SPLIT BUTTONS */
+.scan-btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.scan-split-btn {
+  border-radius: 18px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+
+.scan-split-btn:active {
+  transform: scale(0.97);
+}
+
+.scan-split-label {
+  background: linear-gradient(135deg, var(--green) 0%, #00C4B4 100%);
+  box-shadow: 0 8px 28px rgba(46, 229, 160, 0.22);
+}
+
+.scan-split-barcode {
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+  box-shadow: 0 8px 28px rgba(99, 102, 241, 0.22);
+}
+
+.scan-split-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.scan-split-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  color: #050D0A;
+}
+
+.scan-split-barcode .scan-split-title {
+  color: #fff;
+}
+
+.scan-split-sub {
+  font-size: 11px;
+  color: rgba(5, 13, 10, 0.6);
+  letter-spacing: 0.04em;
+}
+
+.scan-split-barcode .scan-split-sub {
+  color: rgba(255, 255, 255, 0.65);
+}
+
 /* BARCODE SCANNER */
 .barcode-frame {
   width: 84% !important;
@@ -893,11 +952,6 @@ h1.brand {
   background: rgba(23, 32, 51, 0.9) !important;
 }
 
-.barcode-cta {
-  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%) !important;
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.25) !important;
-  margin-bottom: 10px;
-}
 
 /* MANUAL ADD */
 .form-field {
