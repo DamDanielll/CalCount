@@ -54,6 +54,7 @@ export default function ReviewScreen() {
 
   const n = scanned;
   const [foodName, setFoodName] = useState(n?.name || '');
+  const [showBreakdown, setShowBreakdown] = useState(false);
   const isGrams = trackMode === 'grams';
   const hasGramData = n?.per100g?.calories != null || n?.servingGrams;
   const t = calcTotals(n, trackMode, servings, grams);
@@ -77,67 +78,52 @@ export default function ReviewScreen() {
       <div className="review-header">
         <div className="back-btn" onClick={() => goTo('home')}>←</div>
         <div>
-          <div className="label">Scanned Label</div>
-          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: '0.06em' }}>
-            {n?.name || 'Scanned Item'}
-          </div>
+          <div className="label">Nutrition Label Scan</div>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: '0.06em' }}>Add to Log</div>
         </div>
       </div>
 
-      {capturedImg && <img className="review-img" src={capturedImg} alt="Scanned label" />}
-
-      <div className="card" style={{ padding: '16px 18px', marginBottom: 12 }}>
-        <div className="label" style={{ marginBottom: 8 }}>What food is this?</div>
-        <input
-          className="input-field"
-          type="text"
-          value={foodName}
-          onChange={e => setFoodName(e.target.value)}
-          placeholder="e.g. Greek Yogurt, Protein Bar..."
-        />
+      {/* Step 1 — Food name */}
+      <div className="prompt-step">
+        <div className="prompt-step-num">1</div>
+        <div className="prompt-step-body">
+          <div className="prompt-step-q">What food is this?</div>
+          <input
+            className="input-field"
+            type="text"
+            value={foodName}
+            onChange={e => setFoodName(e.target.value)}
+            placeholder="e.g. Greek Yogurt, Protein Bar…"
+            autoFocus
+          />
+        </div>
       </div>
 
-      <div className="card">
-        <div className="label" style={{ marginBottom: 12 }}>Per Serving · {n?.servingSize || '1 serving'}</div>
-        <div className="nutrition-table">
-          <div className="nut-row">
-            <div className="nut-name">🔥 Calories</div>
-            <div className="nut-val">{n?.calories} kcal</div>
-          </div>
-          {MACROS.map(m => (
-            <div className="nut-row" key={m.key}>
-              <div className="nut-name">
-                <div className="macro-dot" style={{ background: m.color }} />
-                {m.label}
+      {/* Step 2 — Amount */}
+      <div className="prompt-step">
+        <div className="prompt-step-num">2</div>
+        <div className="prompt-step-body">
+          <div className="prompt-step-q">How much are you having?</div>
+
+          <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+            {['servings', 'grams'].map(mode => (
+              <div
+                key={mode}
+                onClick={() => setTrackMode(mode)}
+                style={{
+                  flex: 1, padding: 10, borderRadius: 12, textAlign: 'center', cursor: 'pointer',
+                  fontWeight: 600, fontSize: 13, letterSpacing: '0.04em',
+                  border: `1px solid ${trackMode === mode ? 'rgba(46,229,160,0.4)' : 'var(--border)'}`,
+                  background: trackMode === mode ? 'rgba(46,229,160,0.1)' : 'var(--bg3)',
+                  color: trackMode === mode ? 'var(--green)' : 'var(--text2)',
+                }}
+              >
+                {mode === 'servings' ? 'Servings' : 'Grams'}
               </div>
-              <div className="nut-val" style={{ color: m.color }}>{fmt(n?.[m.key] || 0)}g</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-        {['servings', 'grams'].map(mode => (
-          <div
-            key={mode}
-            onClick={() => setTrackMode(mode)}
-            style={{
-              flex: 1, padding: 12, borderRadius: 12, textAlign: 'center', cursor: 'pointer',
-              fontWeight: 600, fontSize: 14, letterSpacing: '0.04em',
-              border: `1px solid ${trackMode === mode ? 'rgba(46,229,160,0.4)' : 'var(--border)'}`,
-              background: trackMode === mode ? 'rgba(46,229,160,0.1)' : 'var(--bg3)',
-              color: trackMode === mode ? 'var(--green)' : 'var(--text2)',
-            }}
-          >
-            {mode === 'servings' ? 'By Servings' : 'By Grams'}
+            ))}
           </div>
-        ))}
-      </div>
 
-      <div className="card">
-        <div className="label" style={{ marginBottom: 14 }}>How much did you eat?</div>
-        {!isGrams ? (
-          <>
+          {!isGrams ? (
             <div className="servings-control">
               <div className="serv-btn" onClick={() => {
                 const v = Math.round((servings - 0.5) * 10) / 10;
@@ -152,35 +138,29 @@ export default function ReviewScreen() {
                   onChange={e => { const v = parseFloat(e.target.value); if (!isNaN(v) && v > 0) setServings(v); }}
                   style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 36, letterSpacing: '0.06em', background: 'transparent', border: 'none', color: 'var(--text)', width: 90, textAlign: 'center', outline: 'none' }}
                 />
-                <div className="serv-label">servings</div>
+                <div className="serv-label">{n?.servingSize ? `× ${n.servingSize}` : 'servings'}</div>
               </div>
               <div className="serv-btn" onClick={() => setServings(Math.round((servings + 0.5) * 10) / 10)}>+</div>
             </div>
-            <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--text3)', marginTop: 4 }}>
-              Use +/− or type the amount directly
-            </div>
-          </>
-        ) : (
-          <>
+          ) : (
             <div style={{ position: 'relative' }}>
               <input
                 type="number"
                 placeholder="e.g. 150"
                 value={grams}
                 onChange={e => setGrams(e.target.value)}
-                autoFocus
                 className="input-field"
                 style={{ fontSize: 28, fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.06em', paddingRight: 60, textAlign: 'center' }}
               />
               <div style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: 'var(--text3)', fontWeight: 600 }}>g</div>
+              {!hasGramData && <div style={{ fontSize: 11, color: 'var(--amber)', marginTop: 8, textAlign: 'center' }}>⚠️ No per-100g data on label — estimate based on serving size</div>}
             </div>
-            {!hasGramData && <div style={{ fontSize: 11, color: 'var(--amber)', marginTop: 8, textAlign: 'center' }}>⚠️ No per-100g data found on label — estimate based on serving size</div>}
-            <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--text3)', marginTop: 8 }}>Type the weight in grams you ate</div>
-          </>
-        )}
+          )}
+        </div>
       </div>
 
-      <div className="total-card">
+      {/* Live total */}
+      <div className="total-card" style={{ marginBottom: 14 }}>
         <div className="label" style={{ marginBottom: 6 }}>Total to Log</div>
         <div className="total-cal">
           {t.cal}<span style={{ fontSize: 18, fontWeight: 400, color: 'var(--text2)' }}> kcal</span>
@@ -194,9 +174,43 @@ export default function ReviewScreen() {
         </div>
       </div>
 
-      <button className="btn btn-primary" style={{ marginBottom: 12 }} onClick={handleAddEntry}>Add to Log</button>
-      <button className="btn btn-secondary" onClick={() => goTo('scan')}>Rescan</button>
-      <div style={{ height: 20 }} />
+      <button className="btn btn-primary" style={{ marginBottom: 10 }} onClick={handleAddEntry}>
+        Add to Log
+      </button>
+
+      {/* Collapsible nutrition breakdown */}
+      <div
+        style={{ textAlign: 'center', fontSize: 13, color: 'var(--text2)', cursor: 'pointer', marginBottom: 12, padding: '8px 0' }}
+        onClick={() => setShowBreakdown(v => !v)}
+      >
+        {showBreakdown ? '▲ Hide' : '▼ View'} nutrition breakdown
+      </div>
+
+      {showBreakdown && (
+        <>
+          {capturedImg && <img className="review-img" src={capturedImg} alt="Scanned label" />}
+          <div className="card" style={{ marginBottom: 14 }}>
+            <div className="label" style={{ marginBottom: 12 }}>Per Serving · {n?.servingSize || '1 serving'}</div>
+            <div className="nutrition-table">
+              <div className="nut-row">
+                <div className="nut-name">🔥 Calories</div>
+                <div className="nut-val">{n?.calories} kcal</div>
+              </div>
+              {MACROS.map(m => (
+                <div className="nut-row" key={m.key}>
+                  <div className="nut-name">
+                    <div className="macro-dot" style={{ background: m.color }} />
+                    {m.label}
+                  </div>
+                  <div className="nut-val" style={{ color: m.color }}>{fmt(n?.[m.key] || 0)}g</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      <button className="btn btn-secondary" style={{ marginBottom: 20 }} onClick={() => goTo('scan')}>Rescan</button>
     </div>
   );
 }
