@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { lazy, Suspense, useRef } from 'react';
 import { useApp } from './context/AppContext';
 import Toast from './components/Toast';
 import SetupScreen from './screens/SetupScreen';
@@ -10,7 +10,7 @@ import DescribeScreen from './screens/DescribeScreen';
 import HistoryScreen from './screens/HistoryScreen';
 import MealsScreen from './screens/MealsScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import BarcodeScreen from './screens/BarcodeScreen';
+const BarcodeScreen = lazy(() => import('./screens/BarcodeScreen'));
 
 function AppInner() {
   const { screen, toastRef } = useApp();
@@ -26,7 +26,7 @@ function AppInner() {
       {screen === 'history' && <HistoryScreen />}
       {screen === 'meals' && <MealsScreen />}
       {screen === 'settings' && <SettingsScreen />}
-      {screen === 'barcode' && <BarcodeScreen />}
+      {screen === 'barcode' && <Suspense fallback={null}><BarcodeScreen /></Suspense>}
       <Toast ref={toastRef} />
     </>
   );
